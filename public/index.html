@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        .table{width: 50%; border-collapse: collapse}
+        TD, TH{padding: 3px;border:1px solid black;}
+      </style>
+    <title>AJAX lb9</title>
+    <script> 
+        task_url= location.protocol + "//" +  location.host + "/task/output.json" 
+        function send_query(){ 
+        var frm = document.forms.task_form;
+        var param_str = "";
+        param_str = "?" + "input=" + frm.input.value
+        if (param_str == "") return false;
+        var my_JSON_object = {};
+        var http_request = new XMLHttpRequest(); 
+        http_request.open("GET", task_url+param_str, true);
+        http_request.onreadystatechange = function () {
+            var done = 4, ok = 200;
+            if (http_request.readyState == done &&
+            http_request.status == ok) {
+            my_JSON_object =JSON.parse(http_request.responseText);
+            show_result(my_JSON_object);
+            }
+        };
+        http_request.send(null);
+        return false;
+        }
+        function show_result(data){
+        var result = document.getElementById("result");
+        result.innerHTML = "<h1>Пары дружественных чисел</h1><tr><td><strong>Число 1</strong></td> <td><strong>Число 2</strong></td> </tr>"
+        for(let i=1;i<data.value.length/2+1;i++){
+            tr = document.createElement('tr');
+            tr.append(document.createElement('td'));
+            tr.append(document.createElement('td'));
+            tr.children[0].innerText=data.value[i*2-2]
+            tr.children[1].innerText=data.value[i*2-1]
+            result.append(tr);
+          }      
+        }   
+    </script>
+</head>
+<body>
+    <p> Программа выводит дружественные числа в диапазоне от 1 до n </p>
+    <form name="task_form" method="get"> 
+        <label >Введите n:</label>
+        <input id="input" name="input" type="text" /> <br/><br/>
+        <input name="commit" type="submit" value="Показать числа" onclick="return send_query();" />
+    </form>
+    <table class="table" id="result"> 
+    </table>
+</body>
+</html>
+</body>
+
